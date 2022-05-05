@@ -49,11 +49,49 @@ void printB(board b){
 
     for(int i = 0; i<rows; i++){
         for(int j=  0; j<cols; j++){
-            printf("%c " ,b[i][j]->type);
+            if(b[i][j]->type == '\0') printf(" ");
+            else printf("%c " ,b[i][j]->type);
         }
         printf("\n");
     }
 }
 
+// char makeSquareEmpty(board* b, int oldX, int oldY, int newX, int newY){
+
+//     char type = board[oldX][oldY]->type;
+//     board board = *b;
+
+//     board[oldX][oldY]->color = '\0';
+//     board[oldX][oldY]->points = 0;
+//     board[oldX][oldY]->type = '\0';
+//     *b = board;
+//     return type;
+// }
+
+void changeNewSquare(board* b, int oldX, int oldY, int newX, int newY, char type){
+    board board = *b;
+    // board[newX][newY]->color
 
 
+    *b = board;
+
+}  
+
+void movePiece(board* b, int oldX, int oldY, int newX, int newY){
+    board board = *b;
+    //setting old coordinates to zero
+    char type = board[oldX][oldY]->type;
+    char color = board[oldX][oldY]->color;
+
+    board[oldX][oldY]->color = '\0';
+    board[oldX][oldY]->points = 0;
+    board[oldX][oldY]->type = '\0';
+
+    board[newX][newY]->color =color;
+    board[newX][newY]->type = type;
+
+
+    *b = board;    
+}
+
+//update points of each piece
