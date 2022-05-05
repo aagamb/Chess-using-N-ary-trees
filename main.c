@@ -5,7 +5,7 @@ int main(){
 
     board b = initB();
     // printB(b);
-    movePiece(&b, 0, 0, 4, 4);
+    movePiece(&b, 0, 0, 4, 0);
 
     printB(b);
 

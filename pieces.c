@@ -56,39 +56,61 @@ void printB(board b){
     }
 }
 
-// char makeSquareEmpty(board* b, int oldX, int oldY, int newX, int newY){
-
-//     char type = board[oldX][oldY]->type;
-//     board board = *b;
-
-//     board[oldX][oldY]->color = '\0';
-//     board[oldX][oldY]->points = 0;
-//     board[oldX][oldY]->type = '\0';
-//     *b = board;
-//     return type;
-// }
-
-void changeNewSquare(board* b, int oldX, int oldY, int newX, int newY, char type){
-    board board = *b;
-    // board[newX][newY]->color
-
-
-    *b = board;
-
-}  
+  
 
 void movePiece(board* b, int oldX, int oldY, int newX, int newY){
+
+    int** paths; //lists of all paths
     board board = *b;
-    //setting old coordinates to zero
-    char type = board[oldX][oldY]->type;
-    char color = board[oldX][oldY]->color;
+    char oldType = board[oldX][oldY]->type;
+    char oldColor = board[oldX][oldY]->color;
+    char newType = board[oldX][oldY]->type;
+    char newColor = board[oldX][oldY]->color;
+
+
+    //check whether new and old coordinates are the same
+    #pragma region 
+    if((oldX == newX) && (oldY == newY)){
+        printf("\nInvalid Move. Please try again.");
+        movePiece(b, oldX, oldY, newX, newY);
+    }
+    #pragma endregion
+
+    //create list of the path of the piece
+    //moving along x axis
+    if(newY == oldY){
+
+        //allocating space for the list of lists
+        int numPaths = abs(oldX - newX);
+        paths = (int**)malloc(sizeof(int*) * numPaths);
+        for(int i=0; i<numPaths; i++){
+            paths[i] = (int*)malloc(sizeof(int)*2); //for the two coordinates
+            
+        }
+        //HERERERERERERERE
+        for(int temp = oldX - newX-1; temp>=0; temp--){
+            paths[temp][0] = temp;
+            paths[3][1] = newY;
+        }
+        printf("\npaths are:  ");
+        for(int i =0;i<numPaths; i++){
+            printf("%d %d\n", paths[i][0], paths[i][1]);
+        }
+
+    }
+
+    //moving piece from old coords to new coords
+    #pragma region 
+    
 
     board[oldX][oldY]->color = '\0';
     board[oldX][oldY]->points = 0;
     board[oldX][oldY]->type = '\0';
 
-    board[newX][newY]->color =color;
-    board[newX][newY]->type = type;
+    board[newX][newY]->color = oldColor;
+    board[newX][newY]->type = oldType;
+    #pragma endregion
+
 
 
     *b = board;    
