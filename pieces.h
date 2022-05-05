@@ -12,10 +12,10 @@ typedef struct node{
     int y;
 }node;
 
-typedef node** board;
+typedef node*** board;
 
-board initBoard();
-void printBoard(board b);
+board initB();
+void printB(board b);
 
 #endif
 
