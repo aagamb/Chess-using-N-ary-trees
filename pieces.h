@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "possib"
 
 typedef struct node{
     char type;

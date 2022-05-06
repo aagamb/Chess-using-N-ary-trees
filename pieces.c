@@ -60,7 +60,7 @@ void printB(board b){
 
 void movePiece(board* b, int oldX, int oldY, int newX, int newY){
 
-    int** paths; //lists of all paths
+    int** moves; //lists of all moves
     board board = *b;
     char oldType = board[oldX][oldY]->type;
     char oldColor = board[oldX][oldY]->color;
@@ -72,32 +72,9 @@ void movePiece(board* b, int oldX, int oldY, int newX, int newY){
     #pragma region 
     if((oldX == newX) && (oldY == newY)){
         printf("\nInvalid Move. Please try again.");
-        movePiece(b, oldX, oldY, newX, newY);
+        // movePiece(b, oldX, oldY, newX, newY);
     }
     #pragma endregion
-
-    //create list of the path of the piece
-    //moving along x axis
-    if(newY == oldY){
-
-        //allocating space for the list of lists
-        int numPaths = abs(oldX - newX);
-        paths = (int**)malloc(sizeof(int*) * numPaths);
-        for(int i=0; i<numPaths; i++){
-            paths[i] = (int*)malloc(sizeof(int)*2); //for the two coordinates
-            
-        }
-        //HERERERERERERERE
-        for(int temp = oldX - newX-1; temp>=0; temp--){
-            paths[temp][0] = temp;
-            paths[3][1] = newY;
-        }
-        printf("\npaths are:  ");
-        for(int i =0;i<numPaths; i++){
-            printf("%d %d\n", paths[i][0], paths[i][1]);
-        }
-
-    }
 
     //moving piece from old coords to new coords
     #pragma region 
@@ -111,7 +88,16 @@ void movePiece(board* b, int oldX, int oldY, int newX, int newY){
     board[newX][newY]->type = oldType;
     #pragma endregion
 
-
+    switch (oldType)
+    {
+    case 'r':
+        moves = rookMoves(oldX, oldY, newX, newY);
+        break;
+    
+    default:
+        printf("default");
+        break;
+    }
 
     *b = board;    
 }
