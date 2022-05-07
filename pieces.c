@@ -1,7 +1,9 @@
 #include "pieces.h"
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <stdbool.h>
+
 
 int rows = 8;
 int cols = 8;
@@ -86,12 +88,29 @@ void movePiece(board* b, int oldX, int oldY, int newX, int newY){
 
     board[newX][newY]->color = oldColor;
     board[newX][newY]->type = oldType;
+    // printf("should be changed: %c", board[newX][newY]->type);
     #pragma endregion
 
     switch (oldType)
     {
     case 'r':
-        moves = rookMoves(oldX, oldY, newX, newY);
+        moves = rookPaths(oldX, oldY, newX, newY);
+        break;
+
+    case 'b':
+        moves = bishopPaths(oldX, oldY, newX, newY);
+        break;
+
+    case 'k':
+        moves = knightPaths(oldX,oldY, newX, newY);
+        break;
+
+    case 'q':
+        moves = queenPaths(oldX, oldY, newX, newY);
+        break;
+    
+    case 'g':
+        moves = kingPaths(oldX, oldY, newX, newY);
         break;
     
     default:
@@ -100,6 +119,68 @@ void movePiece(board* b, int oldX, int oldY, int newX, int newY){
     }
 
     *b = board;    
+}
+
+int** allRookMoves(board b, int currX, int currY){
+    //you are allowing the piece to be at the same location because there is already a check put in place to prevent that from happening
+    int numMoves = 16;
+    int** moves = (int**)malloc(sizeof(int*) * numMoves);
+
+    int j = 0;
+    for(int i =0; i<numMoves; i++){
+        moves[i] = (int*)malloc(sizeof(int)*2);
+        if(i<=7){
+            moves[i][0] = j++;
+            moves[i][1] = currY;
+        }
+        if(j>7) j= 0;
+        if(i>=8){
+            moves[i][0] = currX;
+            moves[i][1] = j++;
+        }  
+    }
+    return moves;
+    // for(int i =0;i<numMoves; i++){
+    //         printf("%d %d\n", moves[i][0], moves[i][1]);
+    // }
+}
+
+int isMoveValid(board b, int** allMoves, int oldX, int oldY){
+    // int lenAllMoves = sizeof(allMoves)/sizeof(int*);
+    int lenAllMoves = 14;
+
+    // printf("len of intstarstar %d", getLenIntStarStar(allMoves));
+
+    char initColor= b[oldX][oldY]->color;
+    char type = b[oldX][oldY]->type;
+
+    for(int i=0; i<lenAllMoves; i++){
+        int* coords = allMoves[i];
+        int newX = coords[0];
+        int newY = coords[1];
+
+        //check if final color == initial color
+        if(b[newX][newY]->color == initColor) return 0;
+
+        int** path = rookPaths(oldX, oldY, newX, newY);
+
+        //for square in path
+            //if sqaure.color != '\0' return 0
+        
+    }
+
+    // printf("\n len of all moves: %d\n", lenAllMoves);
+}
+
+
+//helpers
+int getLenIntStarStar(int** arr){
+
+    for(int i =0;i<18; i++){
+        printf("%p\n", arr++);
+    }
+
+    return 0;
 }
 
 //update points of each piece
