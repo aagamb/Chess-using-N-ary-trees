@@ -5,13 +5,14 @@ int** rookPaths(int oldX, int oldY, int newX, int newY){
     int** moves; //lists of all moves
 
     //check is atleast x or y is the same. Condition for valid move of rook
-    #pragma region 
-    if((oldX == newX) || (oldY == newY)) ; //pass
-    else{
-        printf("\nInvalid Move. Please try again.");
-        // movePiece(b, oldX, oldY, newX, newY);
-    }
-    #pragma endregion
+    // #pragma region 
+    // printf("oldX %d newX %d\n", oldX, newX);
+    // if((oldX == newX) || (oldY == newY)) ; //pass
+    // else{
+    //     printf("\nInvalid Move. Please try again. (func: rookPaths) ");
+    //     // movePiece(b, oldX, oldY, newX, newY);
+    // }
+    // #pragma endregion
 
     //create list of the possible moves of piece of the piece
     #pragma region 
@@ -40,6 +41,7 @@ int** rookPaths(int oldX, int oldY, int newX, int newY){
                 moves[k++][1] = newY;
             }
         }
+        
 
         // printf("\npaths are:  ");
         // for(int i =0;i<numPaths; i++){
@@ -50,6 +52,7 @@ int** rookPaths(int oldX, int oldY, int newX, int newY){
     }else if(newX == oldX){
         //allocating space for the list of lists
         int numPaths = abs(oldY - newY);
+
         moves = (int**)malloc(sizeof(int*) * numPaths);
         for(int i=0; i<numPaths; i++){
             moves[i] = (int*)malloc(sizeof(int)*2); //for the two coordinates   

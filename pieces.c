@@ -58,8 +58,6 @@ void printB(board b){
     }
 }
 
-  
-
 void movePiece(board* b, int oldX, int oldY, int newX, int newY){
 
     int** moves; //lists of all moves
@@ -73,7 +71,7 @@ void movePiece(board* b, int oldX, int oldY, int newX, int newY){
     //check whether new and old coordinates are the same
     #pragma region 
     if((oldX == newX) && (oldY == newY)){
-        printf("\nInvalid Move. Please try again.");
+        printf("\nInvalid Move. Please try again. (call from movePiece) ");
         // movePiece(b, oldX, oldY, newX, newY);
     }
     #pragma endregion
@@ -114,7 +112,9 @@ void movePiece(board* b, int oldX, int oldY, int newX, int newY){
         break;
     
     default:
-        printf("default");
+        printf("default (call from movePiece)\n");
+        printf("type causing default: %c\n", board[oldX][oldY]->type);
+
         break;
     }
 
@@ -122,54 +122,132 @@ void movePiece(board* b, int oldX, int oldY, int newX, int newY){
 }
 
 int** allRookMoves(board b, int currX, int currY){
-    //you are allowing the piece to be at the same location because there is already a check put in place to prevent that from happening
-    int numMoves = 16;
-    int** moves = (int**)malloc(sizeof(int*) * numMoves);
+    int numMoves = 14;
 
-    int j = 0;
-    for(int i =0; i<numMoves; i++){
+    int** moves = (int**)malloc(sizeof(int*) * numMoves);
+    int** movesValid = (int**)malloc(sizeof(int*) * numMoves);
+
+    int j;
+    //list of all rook moves
+    #pragma region 
+    //keeping x constant, changing y
+    j=0;
+    for(int i=0; i<7;i++){
+        if(i== currX && j== currY) {i--; j++; continue;}
         moves[i] = (int*)malloc(sizeof(int)*2);
-        if(i<=7){
-            moves[i][0] = j++;
-            moves[i][1] = currY;
-        }
-        if(j>7) j= 0;
-        if(i>=8){
-            moves[i][0] = currX;
-            moves[i][1] = j++;
-        }  
+        moves[i][0] = j++;
+        moves[i][1] = currY;
     }
-    return moves;
+    //keeping y constant, changing x
+    j = 0;
+    for(int i =0; i<7;i++){
+        if(i== currX && j== currY) {i--; j++; continue;}
+        moves[i+7] = (int*)malloc(sizeof(int)*2);
+        moves[i+7][0] = currX;
+        moves[i+7][1] = j++;
+    }
+    #pragma endregion
+    
+    for(int i=0; i<numMoves; i++){
+        int newX = moves[i][0];
+        int newY = moves[i][1];
+
+        //checking if the path is valid
+
+
+            
+
+            //if path is valid, append to movesValid
+            //else continue
+    }
+
+
     // for(int i =0;i<numMoves; i++){
     //         printf("%d %d\n", moves[i][0], moves[i][1]);
     // }
+    
+    return moves;
 }
 
-int isMoveValid(board b, int** allMoves, int oldX, int oldY){
-    // int lenAllMoves = sizeof(allMoves)/sizeof(int*);
-    int lenAllMoves = 14;
-
-    // printf("len of intstarstar %d", getLenIntStarStar(allMoves));
+int** validMoves(board b, int** allMoves, int oldX, int oldY){
+  
+    int pathSize;
+    int numPaths;
+    int** paths;
+    int isValid = 0;
+    int validMovesCounter =0;
+    
 
     char initColor= b[oldX][oldY]->color;
     char type = b[oldX][oldY]->type;
 
-    for(int i=0; i<lenAllMoves; i++){
+    //to set numPaths and paths
+    switch (type)
+    {
+    case 'r':
+        numPaths = 14;
+        break;
+    
+    default:
+        break;
+    }
+
+    //initializing validMoves array
+    int** validMoves = (int**)malloc(sizeof(int*)*numPaths);
+
+    for(int i=0; i<numPaths; i++){
         int* coords = allMoves[i];
         int newX = coords[0];
         int newY = coords[1];
 
-        //check if final color == initial color
-        if(b[newX][newY]->color == initColor) return 0;
+        printf("newX, newY : %d, %d\n", newX, newY);
 
-        int** path = rookPaths(oldX, oldY, newX, newY);
+        // check if final color == initial color
+        // if(b[newX][newY]->color == initColor) {
+        //     printf("the color is the same\n");
+        //     continue;
+        // }
 
-        //for square in path
-            //if sqaure.color != '\0' return 0
+        //to set pathSize and int** paths
+        switch (type)
+        {
+        case 'r':
+            pathSize = (oldX == newX) ? abs(newY - oldY) : abs(newX - oldX);
+            paths = rookPaths(oldX, oldY, newX, newY);
+            break;
         
+        default:
+            break;
+        }
+
+        for(int j =0; j<pathSize; j++){
+            // printf("%d %d\n", paths[j][0], paths[j][1]);
+
+            int pathX = paths[j][0];
+            int pathY = paths[j][1];
+
+            if(b[pathX][pathY]->type == '\0'){
+                isValid = 1;
+            }
+            else{
+                isValid = 0;
+            
+            }
+        }
+
+        if(isValid) {
+            printf("is valid\n");
+            validMoves[validMovesCounter] = (int*)malloc(sizeof(int)*2);
+            validMoves[validMovesCounter][0] = newX;
+            validMoves[validMovesCounter++][1] = newY;
+        }   
+        isValid =0;     
     }
 
-    // printf("\n len of all moves: %d\n", lenAllMoves);
+    for(int i =0;i<validMovesCounter;i++){
+        printf("%d %d\n", validMoves[i][0], validMoves[i][1]);
+    }
+    return validMoves;
 }
 
 

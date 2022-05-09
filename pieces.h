@@ -22,8 +22,8 @@ char makeSquareEmpty(board* b, int oldX, int oldY, int newX, int newY);
 void changeNewSquare(board* b, int oldX, int oldY, int newX, int newY, char type);
 void movePiece(board* b, int oldX, int oldY, int newX, int newY);
 
-int** allRookMoves(node*** b, int currX, int currY);
-int isMoveValid(board b, int** allMoves, int oldX, int oldY);
+int** allRookMoves(board b, int currX, int currY);
+int** validMoves(board b, int** allMoves, int oldX, int oldY);
 
 
 //helpers
