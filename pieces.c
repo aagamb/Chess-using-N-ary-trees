@@ -182,6 +182,29 @@ int** allKnightMoves(board b, int oldX, int oldY){
     return moves;
 }
 
+int** allBishopMoves(board b, int oldX, int oldY){
+    int numMoves = 13; //max number of moves of bishop
+    int movesCounter =0;
+
+    int** moves = (int**)malloc(sizeof(int*) * numMoves);
+    for(int i=0; i<numMoves; i++) moves[i] = (int*)malloc(sizeof(int)*2);
+
+    int temp[2] = {-1,1};
+    int temp2[2] = {1,-1};
+
+    int k =1;
+    int i,j;
+    for(i =0; i<2; i++){
+        for(j=0; j<2; j++){
+            while(isCoordInBoard(k*temp[i]+ oldX, k*temp[j]+ oldY)){
+                moves[movesCounter][0] = k*temp[i] + oldX;
+                moves[movesCounter++][1] = k*temp[j] + oldY;
+                k++;
+            }
+        }
+    }
+    return moves;
+}
 
 int** validMoves(board b, int oldX, int oldY){
   
@@ -207,6 +230,11 @@ int** validMoves(board b, int oldX, int oldY){
         numPaths = 8;
         allMoves= allKnightMoves(b, oldX, oldY);
         break; 
+
+    case 'b':
+        numPaths = 13;
+        allMoves = allBishopMoves(b, oldX, oldY);
+        break;
     
     default:
         printf("default switch case (call from validMoves)\n");
@@ -234,6 +262,12 @@ int** validMoves(board b, int oldX, int oldY){
         case 'k':
             pathSize = 1;
             paths = knightPaths(oldX, oldY, newX, newY);
+            break;
+
+        case 'b':
+            pathSize = abs(newX - oldX);
+            paths = bishopPaths(oldX, oldY, newX, newY);
+            break;
         
         default:
             break;
@@ -244,6 +278,7 @@ int** validMoves(board b, int oldX, int oldY){
 
             int pathX = paths[j][0];
             int pathY = paths[j][1];
+
 
             if(b[pathX][pathY]->type == '\0'){
                 isValid = 1;
@@ -262,6 +297,7 @@ int** validMoves(board b, int oldX, int oldY){
             validMoves[validMovesCounter][0] = newX;
             validMoves[validMovesCounter++][1] = newY;
         }   
+        else printf("\n");
         isValid =0;     
     }
 
