@@ -23,7 +23,10 @@ void changeNewSquare(board* b, int oldX, int oldY, int newX, int newY, char type
 void movePiece(board* b, int oldX, int oldY, int newX, int newY);
 
 int** allRookMoves(board b, int currX, int currY);
-int** validMoves(board b, int** allMoves, int oldX, int oldY);
+int** allKnightMoves(board b, int oldX, int oldY);
+
+int** validMoves(board b, int oldX, int oldY);
+int isCoordInBoard(int x, int y);
 
 
 //helpers

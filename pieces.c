@@ -147,20 +147,6 @@ int** allRookMoves(board b, int currX, int currY){
         moves[i+7][1] = j++;
     }
     #pragma endregion
-    
-    for(int i=0; i<numMoves; i++){
-        int newX = moves[i][0];
-        int newY = moves[i][1];
-
-        //checking if the path is valid
-
-
-            
-
-            //if path is valid, append to movesValid
-            //else continue
-    }
-
 
     // for(int i =0;i<numMoves; i++){
     //         printf("%d %d\n", moves[i][0], moves[i][1]);
@@ -169,26 +155,61 @@ int** allRookMoves(board b, int currX, int currY){
     return moves;
 }
 
-int** validMoves(board b, int** allMoves, int oldX, int oldY){
+int** allKnightMoves(board b, int oldX, int oldY){
+    int numMoves =8; //max number of moves of a knight
+    int movesCounter = 0;
+
+    //initializing array
+    int** moves = (int**)malloc(sizeof(int*) * numMoves);
+    for(int i=0; i<numMoves; i++) moves[i] = (int*)malloc(sizeof(int)*2);
+
+    int temp[4] = {-2, -1, 1, 2};
+    int temp2[4] = {2, 1, -1, -2};
+
+    //calc total number of moves possible
+    for(int i=0; i<4; i++){
+        int x = temp[i];
+        for(int j=0; j<4; j++){
+            int y = temp2[j];
+            if(abs(x)==abs(y)) continue;
+
+            if(isCoordInBoard(oldX + x, oldY + y)){
+                moves[movesCounter][0] = oldX + x;
+                moves[movesCounter++][1] = oldY + y;
+            }
+        }
+    }
+    return moves;
+}
+
+
+int** validMoves(board b, int oldX, int oldY){
   
     int pathSize;
     int numPaths;
     int** paths;
     int isValid = 0;
     int validMovesCounter =0;
+    int** allMoves;
     
-
     char initColor= b[oldX][oldY]->color;
     char type = b[oldX][oldY]->type;
 
-    //to set numPaths and paths
+    //to set numPaths and int** allMoves
     switch (type)
     {
     case 'r':
         numPaths = 14;
+        allMoves = allRookMoves(b, oldX, oldY);
         break;
+
+    case 'k':
+        numPaths = 8;
+        allMoves= allKnightMoves(b, oldX, oldY);
+        break; 
     
     default:
+        printf("default switch case (call from validMoves)\n");
         break;
     }
 
@@ -200,13 +221,7 @@ int** validMoves(board b, int** allMoves, int oldX, int oldY){
         int newX = coords[0];
         int newY = coords[1];
 
-        printf("newX, newY : %d, %d\n", newX, newY);
-
-        // check if final color == initial color
-        // if(b[newX][newY]->color == initColor) {
-        //     printf("the color is the same\n");
-        //     continue;
-        // }
+        printf("newX, newY : %d, %d   ", newX, newY);
 
         //to set pathSize and int** paths
         switch (type)
@@ -215,6 +230,10 @@ int** validMoves(board b, int** allMoves, int oldX, int oldY){
             pathSize = (oldX == newX) ? abs(newY - oldY) : abs(newX - oldX);
             paths = rookPaths(oldX, oldY, newX, newY);
             break;
+
+        case 'k':
+            pathSize = 1;
+            paths = knightPaths(oldX, oldY, newX, newY);
         
         default:
             break;
@@ -231,9 +250,11 @@ int** validMoves(board b, int** allMoves, int oldX, int oldY){
             }
             else{
                 isValid = 0;
-            
             }
         }
+
+        //if different final colors
+        //DO THIS LATER
 
         if(isValid) {
             printf("is valid\n");
@@ -262,3 +283,8 @@ int getLenIntStarStar(int** arr){
 }
 
 //update points of each piece
+
+int isCoordInBoard(int x, int y){
+    if(x>=0 && x<=7 && y>=0 && y<=7) return 1;
+    else return 0;
+}
