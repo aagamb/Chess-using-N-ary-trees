@@ -257,13 +257,14 @@ int** allPawnMoves(board b, int oldX, int oldY){
 
     
     if(color = 'w'){
-        moves[0][0] = oldX + 1;
-        moves[0][1] = oldY;
         
+        if(b[oldX+1][oldY]->color == '\0'){
+            moves[0][0] = oldX + 1;
+            moves[0][1] = oldY;
+        }
         if(b[oldX+1][oldY+1]->color == 'b'){
             moves[1][0] = oldX + 1;
             moves[1][1] = oldY + 1;
-            printf("added1");
         }
         if(b[oldX+1][oldY-1]->color == 'b'){
             moves[2][0] = oldX + 1;
@@ -275,6 +276,10 @@ int** allPawnMoves(board b, int oldX, int oldY){
         moves[0][0] = oldX - 1;
         moves[0][1] = oldY;
         
+        if(b[oldX-1][oldY]->color == '\0'){
+            moves[0][0] = oldX - 1;
+            moves[0][1] = oldY;
+        }
         if(b[oldX-1][oldY+1]->color == 'w'){
             moves[1][0] = oldX - 1;
             moves[1][1] = oldY + 1;
@@ -424,14 +429,7 @@ int** validMoves(board b, int oldX, int oldY){
 
 
 //helpers
-int getLenIntStarStar(int** arr){
 
-    for(int i =0;i<18; i++){
-        printf("%p\n", arr++);
-    }
-
-    return 0;
-}
 
 //update points of each piece
 
