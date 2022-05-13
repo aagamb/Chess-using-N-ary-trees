@@ -79,7 +79,6 @@ void movePiece(board* b, int oldX, int oldY, int newX, int newY){
     //moving piece from old coords to new coords
     #pragma region 
     
-
     board[oldX][oldY]->color = '\0';
     board[oldX][oldY]->points = 0;
     board[oldX][oldY]->type = '\0';
@@ -113,11 +112,10 @@ void movePiece(board* b, int oldX, int oldY, int newX, int newY){
     
     default:
         printf("default (call from movePiece)\n");
-        printf("type causing default: %c\n", board[oldX][oldY]->type);
+        // printf("type causing default: %c\n", board[oldX][oldY]->type);
 
         break;
     }
-
     *b = board;    
 }
 
@@ -130,18 +128,20 @@ int** allRookMoves(board b, int currX, int currY){
     int j;
     //list of all rook moves
     #pragma region 
-    //keeping x constant, changing y
-    j=0;
+    //keeping y constant, changing x
+
+    j =0 ;
     for(int i=0; i<7;i++){
-        if(i== currX && j== currY) {i--; j++; continue;}
+        // if(i== currX && j== currY) {i--; j++; continue;}
+        if(j == currX) {j++;i--;continue;}
         moves[i] = (int*)malloc(sizeof(int)*2);
         moves[i][0] = j++;
         moves[i][1] = currY;
     }
-    //keeping y constant, changing x
+    //keeping x constant, changing y
     j = 0;
     for(int i =0; i<7;i++){
-        if(i== currX && j== currY) {i--; j++; continue;}
+        if(j == currY) {i--; j++; continue;}
         moves[i+7] = (int*)malloc(sizeof(int)*2);
         moves[i+7][0] = currX;
         moves[i+7][1] = j++;
@@ -196,6 +196,7 @@ int** allBishopMoves(board b, int oldX, int oldY){
     int i,j;
     for(i =0; i<2; i++){
         for(j=0; j<2; j++){
+            k = 1;
             while(isCoordInBoard(k*temp[i]+ oldX, k*temp[j]+ oldY)){
                 moves[movesCounter][0] = k*temp[i] + oldX;
                 moves[movesCounter++][1] = k*temp[j] + oldY;
@@ -206,17 +207,55 @@ int** allBishopMoves(board b, int oldX, int oldY){
     return moves;
 }
 
+int** allQueenMoves(board b, int oldX, int oldY){
+    int numMoves= 13+14 ; //from bishop and rook
+    int** bishopMoves = allBishopMoves(b, oldX, oldY);
+    int** rookMoves = allRookMoves(b, oldX, oldY);
+
+    // allocating memory to array
+    #pragma region 
+    int** moves = (int**)malloc(sizeof(int*)*numMoves);
+    for(int i =0; i<numMoves; i++){
+        moves[i] = (int*)malloc(sizeof(int)*2);
+    }
+    #pragma endregion
+
+    //merging both arrays
+
+    for(int i =0; i<14; i++){
+
+        moves[i][0] = rookMoves[i][0];
+        moves[i][1] = rookMoves[i][1];
+        
+        // printf("%d %d\n", moves[i+13][0], moves[i+13][1]);
+    }
+
+    for(int i =0; i<13; i++){
+        moves[i+14][0] = bishopMoves[i][0];
+        moves[i+14][1] = bishopMoves[i][1];
+        // printf("%d %d\n", moves[i][0], moves[i][1]);
+    }
+    
+
+    return moves;
+}
+
+
 int** validMoves(board b, int oldX, int oldY){
-  
+    
     int pathSize;
     int numPaths;
     int** paths;
     int isValid = 0;
     int validMovesCounter =0;
     int** allMoves;
+    int pathX = 0;
+    int pathY = 0;
     
     char initColor= b[oldX][oldY]->color;
     char type = b[oldX][oldY]->type;
+
+    // printf("type: %c", type);
 
     //to set numPaths and int** allMoves
     switch (type)
@@ -235,6 +274,11 @@ int** validMoves(board b, int oldX, int oldY){
         numPaths = 13;
         allMoves = allBishopMoves(b, oldX, oldY);
         break;
+
+    case 'q':
+        numPaths = 27;
+        allMoves =allQueenMoves(b, oldX, oldY);
+        break;
     
     default:
         printf("default switch case (call from validMoves)\n");
@@ -244,12 +288,11 @@ int** validMoves(board b, int oldX, int oldY){
     //initializing validMoves array
     int** validMoves = (int**)malloc(sizeof(int*)*numPaths);
 
+    //looping through all finalMoves. For each, calculating the path and checking if move is valid.
     for(int i=0; i<numPaths; i++){
         int* coords = allMoves[i];
         int newX = coords[0];
         int newY = coords[1];
-
-        printf("newX, newY : %d, %d   ", newX, newY);
 
         //to set pathSize and int** paths
         switch (type)
@@ -268,23 +311,34 @@ int** validMoves(board b, int oldX, int oldY){
             pathSize = abs(newX - oldX);
             paths = bishopPaths(oldX, oldY, newX, newY);
             break;
+
+        case 'q':
+            if(oldX==newX || oldY==newY)
+                pathSize = (oldX == newX) ? abs(newY - oldY) : abs(newX - oldX); //from rook
+            else
+                pathSize = abs(newX-oldX); //from knight
+            // printf("pathsize for queen = %d\n", pathSize);
+            paths = queenPaths(oldX, oldY, newX, newY);
+            break;
         
         default:
             break;
         }
 
         for(int j =0; j<pathSize; j++){
-            // printf("%d %d\n", paths[j][0], paths[j][1]);
+            
 
-            int pathX = paths[j][0];
-            int pathY = paths[j][1];
+            pathX = paths[j][0];
+            pathY = paths[j][1];
 
+            // printf("Path sqaure %d: (%d %d)\n", j, paths[j][0], paths[j][1]);
 
             if(b[pathX][pathY]->type == '\0'){
                 isValid = 1;
             }
             else{
                 isValid = 0;
+                break;
             }
         }
 
@@ -292,18 +346,18 @@ int** validMoves(board b, int oldX, int oldY){
         //DO THIS LATER
 
         if(isValid) {
-            printf("is valid\n");
+            // printf("is valid\n");
             validMoves[validMovesCounter] = (int*)malloc(sizeof(int)*2);
             validMoves[validMovesCounter][0] = newX;
             validMoves[validMovesCounter++][1] = newY;
         }   
-        else printf("\n");
+        else ; //printf("\n");
         isValid =0;     
     }
 
-    for(int i =0;i<validMovesCounter;i++){
-        printf("%d %d\n", validMoves[i][0], validMoves[i][1]);
-    }
+    // for(int i =0;i<validMovesCounter;i++){
+    //     printf("%d %d\n", validMoves[i][0], validMoves[i][1]);
+    // }
     return validMoves;
 }
 

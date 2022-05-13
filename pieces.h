@@ -25,6 +25,7 @@ void movePiece(board* b, int oldX, int oldY, int newX, int newY);
 int** allRookMoves(board b, int currX, int currY);
 int** allKnightMoves(board b, int oldX, int oldY);
 int** allBishopMoves(board b, int oldX, int oldY);
+int** allQueenMoves(board b, int oldX, int oldY);
 
 int** validMoves(board b, int oldX, int oldY);
 int isCoordInBoard(int x, int y);
