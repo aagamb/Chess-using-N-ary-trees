@@ -25,8 +25,8 @@ board initB(){
             b[i][j]->x = i;
             b[i][j]->y = j;
 
-            if(j<2) b[i][j]->color = 'w';
-            else if(j>5) b[i][j]->color = 'b';
+            if(i<2) b[i][j]->color = 'w';
+            else if(i>5) b[i][j]->color = 'b';
             else b[i][j]->color = '\0';
 
             if((j==0 || j==7) && (i==0 || i ==7)) b[i][j]->type = 'r';
@@ -263,6 +263,7 @@ int** allPawnMoves(board b, int oldX, int oldY){
         if(b[oldX+1][oldY+1]->color == 'b'){
             moves[1][0] = oldX + 1;
             moves[1][1] = oldY + 1;
+            printf("added1");
         }
         if(b[oldX+1][oldY-1]->color == 'b'){
             moves[2][0] = oldX + 1;
@@ -416,6 +417,8 @@ int** validMoves(board b, int oldX, int oldY){
     // for(int i =0;i<validMovesCounter;i++){
     //     printf("%d %d\n", validMoves[i][0], validMoves[i][1]);
     // }
+    free(allMoves);
+    free(paths);
     return validMoves;
 }
 

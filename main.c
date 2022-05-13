@@ -15,6 +15,7 @@ int main(){
 
     // int** validMovesArr = allQueenMoves(b, 0,3);
     int** validMovesArr = validMoves(b, 1,5);
+    
     // int** validMovesArr = pawnPaths(0,3,1,3);
 
 
@@ -24,6 +25,9 @@ int main(){
     for(int i =0;i<27;i++){
         printf("%d %d\n", validMovesArr[i][0], validMovesArr[i][1]);
     }
+    
+    free(validMovesArr);
+    free(b);
 
     
 
