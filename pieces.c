@@ -26,7 +26,8 @@ board initB(){
             b[i][j]->y = j;
 
             if(j<2) b[i][j]->color = 'w';
-            if(j>5) b[i][j]->color = 'b';
+            else if(j>5) b[i][j]->color = 'b';
+            else b[i][j]->color = '\0';
 
             if((j==0 || j==7) && (i==0 || i ==7)) b[i][j]->type = 'r';
             else if((j==1||j==6) && (i==0 || i ==7)) b[i][j]->type = 'k';
@@ -108,6 +109,10 @@ void movePiece(board* b, int oldX, int oldY, int newX, int newY){
     
     case 'g':
         moves = kingPaths(oldX, oldY, newX, newY);
+        break;
+    
+    case 'p':
+        moves = pawnPaths(oldX, oldY, newX, newY);
         break;
     
     default:
@@ -240,9 +245,53 @@ int** allQueenMoves(board b, int oldX, int oldY){
     return moves;
 }
 
+int** allPawnMoves(board b, int oldX, int oldY){
+    int numMoves = 3;
+
+    int** moves = (int**)malloc(sizeof(int*) * numMoves);
+    for(int i =0; i<numMoves; i++){
+        moves[i] = (int*)malloc(sizeof(int)*2);
+    }
+
+    char color = b[oldX][oldY]->color;
+
+    
+    if(color = 'w'){
+        moves[0][0] = oldX + 1;
+        moves[0][1] = oldY;
+        
+        if(b[oldX+1][oldY+1]->color == 'b'){
+            moves[1][0] = oldX + 1;
+            moves[1][1] = oldY + 1;
+        }
+        if(b[oldX+1][oldY-1]->color == 'b'){
+            moves[2][0] = oldX + 1;
+            moves[2][1] = oldY -1;
+        }
+            
+
+    }else{
+        moves[0][0] = oldX - 1;
+        moves[0][1] = oldY;
+        
+        if(b[oldX-1][oldY+1]->color == 'w'){
+            moves[1][0] = oldX - 1;
+            moves[1][1] = oldY + 1;
+        }
+        if(b[oldX-1][oldY-1]->color == 'w'){
+            moves[2][0] = oldX -1;
+            moves[2][1] = oldY -1;
+        }
+    }
+
+    return moves;
+    
+}
 
 int** validMoves(board b, int oldX, int oldY){
     
+    //all local variables
+    #pragma region 
     int pathSize;
     int numPaths;
     int** paths;
@@ -251,11 +300,11 @@ int** validMoves(board b, int oldX, int oldY){
     int** allMoves;
     int pathX = 0;
     int pathY = 0;
+    #pragma endregion
     
     char initColor= b[oldX][oldY]->color;
     char type = b[oldX][oldY]->type;
 
-    // printf("type: %c", type);
 
     //to set numPaths and int** allMoves
     switch (type)
@@ -278,6 +327,11 @@ int** validMoves(board b, int oldX, int oldY){
     case 'q':
         numPaths = 27;
         allMoves =allQueenMoves(b, oldX, oldY);
+        break;
+
+    case 'p':
+        numPaths = 3;
+        allMoves = allPawnMoves(b, oldX, oldY);
         break;
     
     default:
@@ -317,8 +371,12 @@ int** validMoves(board b, int oldX, int oldY){
                 pathSize = (oldX == newX) ? abs(newY - oldY) : abs(newX - oldX); //from rook
             else
                 pathSize = abs(newX-oldX); //from knight
-            // printf("pathsize for queen = %d\n", pathSize);
             paths = queenPaths(oldX, oldY, newX, newY);
+            break;
+
+        case 'p':
+            pathSize = 1;
+            paths = pawnPaths(oldX, oldY, newX, newY);
             break;
         
         default:

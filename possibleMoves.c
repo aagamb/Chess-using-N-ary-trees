@@ -158,7 +158,15 @@ int** kingPaths(int oldX, int oldY, int newX, int newY){
     return moves;
 }
 
+int** pawnPaths(int oldX, int oldY, int newX, int newY){
+    int** moves;
 
+    moves = (int**)malloc(sizeof(int*)*1);
+    moves[0] = (int*)malloc(sizeof(int)*2);
+    moves[0][0] = newX;
+    moves[0][1] = newY;
+    return moves;
+}
 
 
 

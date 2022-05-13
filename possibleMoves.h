@@ -9,6 +9,7 @@ int** bishopPaths(int oldX, int oldY, int newX, int newY);
 int** knightPaths(int oldX, int oldY, int newX, int newY);
 int** queenPaths(int oldX, int oldY, int newX, int newY);
 int** kingPaths(int oldX, int oldY, int newX, int newY);
+int** pawnPaths(int oldX, int oldY, int newX, int newY);
 
 
 
