@@ -27,8 +27,9 @@ int** allKnightMoves(board b, int oldX, int oldY);
 int** allBishopMoves(board b, int oldX, int oldY);
 int** allQueenMoves(board b, int oldX, int oldY);
 int** allPawnMoves(board b, int oldX, int oldY);
+int** allKingMoves(board b, int oldX, int oldY);
 
-int** validMoves(board b, int oldX, int oldY);
+int** validMoves(board b, int oldX, int oldY, int* numValidMoves);
 
 
 

@@ -1,18 +1,27 @@
 #include "pieces.h"
 #include "board.h"
 
+//issues to fix
+// 1. making int* of moves, the empty moves are 0,0. This should be changed to -1,-1. Hence, change listAllBoards after this change is done
 
 int main(){
 
     board b = initB();
 
-    // movePiece(&b, 1,3, 5,3);
-    // movePiece(&b, 1,0, 7,5);
+    movePiece(&b, 1,4, 5,3);
+    movePiece(&b, 1,3, 7,5);
+
+    //TO DO
+    //TO ALL MOVES OF EACH PIECE, ADD THE FINAL MOVE AS WELL IF THE COLOR IS THE OPPOSITE COLOR, ELSE DO NOTHING
+
 
     // int** validMovesArr = pawnPaths(0,3,1,3);
-    // int** validMovesArr = allQueenMoves(b, 0,3);
-    int** validMovesArr = validMoves(b, 1,1);
+    // int** validMovesArr = allKingMoves(b, 3,4);
+
+    // int numValidMoves = 0;
+    // int** validMovesArr = validMoves(b, 0,1, &numValidMoves);
     
+    listNode* tail = listAllBoards(&b, 'w');
 
     // printB(b);
 
@@ -24,13 +33,17 @@ int main(){
     float eval = evaluateBoard(b);
     printf("\nThe evaluation of the board is: %f\n", eval);
 
+    int numBoards = 0;
 
-    free(validMovesArr);
+    while(tail){
+        tail = tail->prev;
+        numBoards+=1;
+    }
+    printf("\nnumBoards: %d", numBoards);
+
+
+    // free(validMovesArr);
     free(b);
-
-    
-
-    
 
     return 0;
 }

@@ -89,38 +89,6 @@ void movePiece(board* b, int oldX, int oldY, int newX, int newY){
     // printf("should be changed: %c", board[newX][newY]->type);
     #pragma endregion
 
-    switch (oldType)
-    {
-    case 'r':
-        moves = rookPaths(oldX, oldY, newX, newY);
-        break;
-
-    case 'b':
-        moves = bishopPaths(oldX, oldY, newX, newY);
-        break;
-
-    case 'k':
-        moves = knightPaths(oldX,oldY, newX, newY);
-        break;
-
-    case 'q':
-        moves = queenPaths(oldX, oldY, newX, newY);
-        break;
-    
-    case 'g':
-        moves = kingPaths(oldX, oldY, newX, newY);
-        break;
-    
-    case 'p':
-        moves = pawnPaths(oldX, oldY, newX, newY);
-        break;
-    
-    default:
-        printf("default (call from movePiece)\n");
-        // printf("type causing default: %c\n", board[oldX][oldY]->type);
-
-        break;
-    }
     *b = board;    
 }
 
@@ -258,15 +226,15 @@ int** allPawnMoves(board b, int oldX, int oldY){
     
     if(color = 'w'){
         
-        if(b[oldX+1][oldY]->color == '\0'){
+        if(isCoordInBoard(oldX+1, oldY) && b[oldX+1][oldY]->color == '\0'){
             moves[0][0] = oldX + 1;
             moves[0][1] = oldY;
         }
-        if(b[oldX+1][oldY+1]->color == 'b'){
+        if(isCoordInBoard(oldX+1, oldY+1) && b[oldX+1][oldY+1]->color == 'b'){
             moves[1][0] = oldX + 1;
             moves[1][1] = oldY + 1;
         }
-        if(b[oldX+1][oldY-1]->color == 'b'){
+        if(isCoordInBoard(oldX+1, oldY-1) && b[oldX+1][oldY-1]->color == 'b'){
             moves[2][0] = oldX + 1;
             moves[2][1] = oldY -1;
         }
@@ -276,15 +244,15 @@ int** allPawnMoves(board b, int oldX, int oldY){
         moves[0][0] = oldX - 1;
         moves[0][1] = oldY;
         
-        if(b[oldX-1][oldY]->color == '\0'){
+        if(isCoordInBoard(oldX-1, oldY) && b[oldX-1][oldY]->color == '\0'){
             moves[0][0] = oldX - 1;
             moves[0][1] = oldY;
         }
-        if(b[oldX-1][oldY+1]->color == 'w'){
+        if(isCoordInBoard(oldX-1, oldY) && b[oldX-1][oldY+1]->color == 'w'){
             moves[1][0] = oldX - 1;
             moves[1][1] = oldY + 1;
         }
-        if(b[oldX-1][oldY-1]->color == 'w'){
+        if(isCoordInBoard(oldX-1, oldY-1) && b[oldX-1][oldY-1]->color == 'w'){
             moves[2][0] = oldX -1;
             moves[2][1] = oldY -1;
         }
@@ -294,7 +262,35 @@ int** allPawnMoves(board b, int oldX, int oldY){
     
 }
 
-int** validMoves(board b, int oldX, int oldY){
+int** allKingMoves(board b, int oldX, int oldY){
+    int numMoves= 8;
+    int movesCounter = 0;
+
+    int** moves = (int**)malloc(sizeof(int*) * numMoves);
+    for(int i =0; i<numMoves; i++){
+        moves[i] = (int*)malloc(2*sizeof(int));
+    }
+
+    char color = b[oldX][oldY]->color;
+
+    int temp[3] = {-1,0,1};
+    int temp2[3] = {-1,0,1};
+
+    for(int i = 0; i<3; i++){
+        for(int j = 0; j<3; j++){
+            if(isCoordInBoard(oldX+temp[i], oldY+temp2[j])&& !(temp[i]==0 && temp2[j]==0) ){
+                moves[movesCounter][0] = oldX + temp[i];
+                moves[movesCounter++][1] = oldY + temp2[j];
+            }
+        }
+    }
+
+    return moves;
+
+}
+
+
+int** validMoves(board b, int oldX, int oldY, int* numValidMoves){
     
     //all local variables
     #pragma region 
@@ -338,6 +334,11 @@ int** validMoves(board b, int oldX, int oldY){
     case 'p':
         numPaths = 3;
         allMoves = allPawnMoves(b, oldX, oldY);
+        break;
+
+    case 'g':
+        numPaths = 8;
+        allMoves = allKingMoves(b, oldX, oldY);
         break;
     
     default:
@@ -384,13 +385,17 @@ int** validMoves(board b, int oldX, int oldY){
             pathSize = 1;
             paths = pawnPaths(oldX, oldY, newX, newY);
             break;
+
+        case 'g':
+            pathSize = 1;
+            paths = kingPaths(oldX, oldY, newX, newY);
+            break;
         
         default:
             break;
         }
 
         for(int j =0; j<pathSize; j++){
-            
 
             pathX = paths[j][0];
             pathY = paths[j][1];
@@ -411,7 +416,7 @@ int** validMoves(board b, int oldX, int oldY){
 
         if(isValid) {
             // printf("is valid\n");
-            validMoves[validMovesCounter] = (int*)malloc(sizeof(int)*2);
+            validMoves[validMovesCounter] = (int*)malloc(2*sizeof(int));
             validMoves[validMovesCounter][0] = newX;
             validMoves[validMovesCounter++][1] = newY;
         }   
@@ -422,6 +427,7 @@ int** validMoves(board b, int oldX, int oldY){
     // for(int i =0;i<validMovesCounter;i++){
     //     printf("%d %d\n", validMoves[i][0], validMoves[i][1]);
     // }
+    *numValidMoves = validMovesCounter;
     free(allMoves);
     free(paths);
     return validMoves;
@@ -434,6 +440,7 @@ int** validMoves(board b, int oldX, int oldY){
 //update points of each piece
 
 int isCoordInBoard(int x, int y){
+    // printf("isCoordinBoard entered");
     if(x>=0 && x<=7 && y>=0 && y<=7) return 1;
     else return 0;
 }
