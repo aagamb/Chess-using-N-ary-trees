@@ -8,42 +8,47 @@ int main(){
 
     board b = initB();
 
-    movePiece(&b, 1,4, 5,3);
-    movePiece(&b, 1,3, 7,5);
+    // movePiece(&b, 1,0, 5,4);
+    // movePiece(&b, 1,3, 5,4);
+    // movePiece(&b, 1,3, 7,5);
 
     //TO DO
     //TO ALL MOVES OF EACH PIECE, ADD THE FINAL MOVE AS WELL IF THE COLOR IS THE OPPOSITE COLOR, ELSE DO NOTHING
 
 
-    // int** validMovesArr = pawnPaths(0,3,1,3);
+    // int** validMovesArr = rookPaths(0,0 , 0 ,5);
     // int** validMovesArr = allKingMoves(b, 3,4);
 
     // int numValidMoves = 0;
-    // int** validMovesArr = validMoves(b, 0,1, &numValidMoves);
+    // int** validMovesArr = validMoves(b, 0,3, &numValidMoves);
     
-    listNode* tail = listAllBoards(&b, 'w');
+    listNode* tail = listAllBoards2(&b, 'w');
 
-    // printB(b);
+    printB(b);
 
-    // printf("\n\nPiece %c list of valid moves: \n", b[1][5]->type);
+    // printf("\n\nPiece %c list of valid moves: \n", b[0][3]->type);
     // for(int i =0;i<27;i++){
     //     printf("%d %d\n", validMovesArr[i][0], validMovesArr[i][1]);
     // }
 
-    float eval = evaluateBoard(b);
-    printf("\nThe evaluation of the board is: %f\n", eval);
+    // float eval = evaluateBoard(b);
+    // printf("\nThe evaluation of the board is: %f\n", eval);
 
     int numBoards = 0;
 
     while(tail){
         tail = tail->prev;
         numBoards+=1;
+        // printB(tail->b);
+        break;
     }
-    printf("\nnumBoards: %d", numBoards);
+    // printf("\nnumBoards: %d", numBoards);
 
 
     // free(validMovesArr);
     free(b);
+
+
 
     return 0;
 }

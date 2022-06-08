@@ -13,5 +13,6 @@ typedef struct listNode{
 listNode* newBoardNode(board b);
 float evaluateBoard(board b);
 listNode* listAllBoards(board* b, char c);
+listNode* listAllBoards2(board* b, char c);
 
 #endif

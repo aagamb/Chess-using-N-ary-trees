@@ -52,7 +52,7 @@ void printB(board b){
 
     for(int i = 0; i<rows; i++){
         for(int j=  0; j<cols; j++){
-            if(b[i][j]->type == '\0') printf(" ");
+            if(b[i][j]->type == '\0') printf("  ");
             else printf("%c " ,b[i][j]->type);
         }
         printf("\n");
@@ -405,14 +405,15 @@ int** validMoves(board b, int oldX, int oldY, int* numValidMoves){
             if(b[pathX][pathY]->type == '\0'){
                 isValid = 1;
             }
+            else if(j== pathSize-1 && b[pathX][pathY]->color == oppColor(initColor)){
+                // printf("last piece is opp color\n");
+                isValid = 1;
+            }
             else{
                 isValid = 0;
                 break;
             }
         }
-
-        //if different final colors
-        //DO THIS LATER
 
         if(isValid) {
             // printf("is valid\n");
@@ -421,6 +422,8 @@ int** validMoves(board b, int oldX, int oldY, int* numValidMoves){
             validMoves[validMovesCounter++][1] = newY;
         }   
         else ; //printf("\n");
+
+
         isValid =0;     
     }
 
@@ -436,7 +439,6 @@ int** validMoves(board b, int oldX, int oldY, int* numValidMoves){
 
 //helpers
 
-
 //update points of each piece
 
 int isCoordInBoard(int x, int y){
@@ -444,3 +446,11 @@ int isCoordInBoard(int x, int y){
     if(x>=0 && x<=7 && y>=0 && y<=7) return 1;
     else return 0;
 }
+
+char oppColor(char c){
+    if(c=='b')
+        return 'w';
+    if(c=='w')
+        return 'b';
+}
+

@@ -35,6 +35,7 @@ int** validMoves(board b, int oldX, int oldY, int* numValidMoves);
 
 //helpers
 int isCoordInBoard(int x, int y);
+char oppColor(char c);
 
 
 #endif
