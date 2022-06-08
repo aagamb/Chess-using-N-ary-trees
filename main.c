@@ -8,9 +8,9 @@ int main(){
 
     board b = initB();
 
-    // movePiece(&b, 1,0, 5,4);
-    // movePiece(&b, 1,3, 5,4);
-    // movePiece(&b, 1,3, 7,5);
+    movePiece(&b, 1,0, 5,4);
+    movePiece(&b, 1,3, 5,4);
+    movePiece(&b, 1,3, 7,5);
 
     //TO DO
     //TO ALL MOVES OF EACH PIECE, ADD THE FINAL MOVE AS WELL IF THE COLOR IS THE OPPOSITE COLOR, ELSE DO NOTHING
@@ -22,7 +22,7 @@ int main(){
     // int numValidMoves = 0;
     // int** validMovesArr = validMoves(b, 0,3, &numValidMoves);
     
-    listNode* tail = listAllBoards2(&b, 'w');
+    listNode2* tail = listAllBoards2(&b, 'w');
 
     printB(b);
 
@@ -34,17 +34,21 @@ int main(){
     // float eval = evaluateBoard(b);
     // printf("\nThe evaluation of the board is: %f\n", eval);
 
-    int numBoards = 0;
+    // int numBoards = 0;
 
-    while(tail){
-        tail = tail->prev;
-        numBoards+=1;
-        // printB(tail->b);
-        break;
-    }
-    // printf("\nnumBoards: %d", numBoards);
+    // while(tail){
+    //     printB(tail->b);
+    //     tail = tail->prev;
+    //     numBoards+=1;
+    // }
+    // printf("\nnumBoards: %d", numBoards); 
 
+    mmnode* mmNode = minimax2(1, &b, 'w');
+    // printB(*(mmNode->b));
+    
 
+    printf("\nthe score is: %d", mmNode->score);
+    
     // free(validMovesArr);
     free(b);
 

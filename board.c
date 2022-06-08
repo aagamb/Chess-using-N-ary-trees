@@ -43,32 +43,45 @@ float evaluateBoard(board b){
             }
         }
     }
-    printf("score is: %f", score);
+    // printf("(from evaluateBoard) score is: %f", score);
     return score;
 }
 
-listNode* newBoardNode(board b){
-    listNode* nn = (listNode*)malloc(sizeof(listNode));
-    nn->b = b;
+listNode2* newBoardNode2(board b){
+    listNode2* nn = (listNode2*)malloc(sizeof(listNode2));    
     nn->next = NULL;
     nn->prev = NULL;
+    board temp;
+
+    // Mallocing memory for new board
+    #pragma region 
+    temp= (board)malloc(8*sizeof(board));
+    for(int i = 0; i<8; i++){
+        temp[i] = (node**)malloc(8*sizeof(node*));
+        for(int j=0;j<8;j++){
+            temp[i][j] = (node*)malloc(sizeof(node));
+        }
+    }
+    #pragma endregion
+
+    for(int i = 0; i<8; i++){
+        for(int j =0; j<8; j++){
+            temp[i][j]->color = b[i][j]->color;
+            temp[i][j]->type = b[i][j]->type;
+            temp[i][j]->x = b[i][j]->x;
+            temp[i][j]->y = b[i][j]->y;
+        }
+    }
+    nn->b = temp;
     return nn;
 }
 
-listNode* newBoardNodeTemp(board* b){
-    listNode* nn = (listNode*)malloc(sizeof(listNode));
-    nn->b = *b;
-    nn->next = NULL;
-    nn->prev = NULL;
-    return nn;
-}
-
-listNode* listAllBoards(board* b, char c){
+listNode2* listAllBoards2(board* b, char c){
 
     board funcBoard = *b;
     int numMoves = 0;
     int** moves;
-    listNode* tail = NULL;
+    listNode2* tail = NULL;
     int numValidMoves = 0;
 
     for(int i = 0; i<8; i++){
@@ -111,9 +124,9 @@ listNode* listAllBoards(board* b, char c){
         
                     //adding node to linked list of boards
                     //if first node
-                    if(!tail) tail = newBoardNode(*b);
+                    if(!tail) tail = newBoardNode2(*b);
                     else {
-                        tail->next = newBoardNode(*b);
+                        tail->next = newBoardNode2(*b);
                         // printB(tail->next->b);
                         tail->next->prev = tail;
                         tail = tail->next;
@@ -125,8 +138,8 @@ listNode* listAllBoards(board* b, char c){
                     movePiece(b, moves[k][0], moves[k][1], i, j);
 
                     
-                    if(tail->prev)
-                        printB(tail->prev->b);
+                    // if(tail->prev)
+                    //     printB(tail->prev->b);
                 }
                 
             }
@@ -135,78 +148,64 @@ listNode* listAllBoards(board* b, char c){
     return tail;
 }
 
-listNode* listAllBoards2(board* b, char c){
+int minimax(int depth, board* b, char c){
 
-    board funcBoard = *b;
-    int numMoves = 0;
-    int** moves;
-    listNode* tail = NULL;
-    int numValidMoves = 0;
+    int boardValue;
+    if (depth == 0)
+        return evaluateBoard(*b);
 
-    for(int i = 0; i<8; i++){
-        for(int j =0; j<8; j++){
-            //there is a piece there
-            if((funcBoard[i][j]->type != '\0') && (funcBoard[i][j]->color==c)){
-                char type = funcBoard[i][j]->type;
-                 //get all the moves of the piece over there. move the piece in the board and add it to listAllBoards
-                switch (type)
-                {
-                case 'r':
-                    numMoves= 14;               
-                    break;
+    listNode2* allBoards = listAllBoards2(b, 'w');
+    // minimax(depth-1, &allBoards->b, 'b');
 
-                case 'k':
-                    numMoves= 8;
-                    break;
-
-                case 'b':
-                    numMoves= 13;               
-                    break;
-
-                case 'q':
-                    numMoves= 27;
-                    break;
-
-                case 'g':
-                    numMoves =8;
-                    break;
-                
-                default:
-                    break;
-                }
-                
-                moves= validMoves(funcBoard, i, j, &numValidMoves);
-                for(int k = 0; k<numValidMoves; k++){
-                    if(moves[k][0] == 0 && moves[k][1] == 0) continue;
-
-                    movePiece(b, i, j, moves[k][0], moves[k][1]);
-        
-                    //adding node to linked list of boards
-                    //if first node
-                    if(!tail) tail = newBoardNode(*b);
-                    else {
-                        tail->next = newBoardNode(*b);
-                        // printB(tail->next->b);
-                        tail->next->prev = tail;
-                        tail = tail->next;
-                    }
-
-                    
-
-                    //undoing the move
-                    movePiece(b, moves[k][0], moves[k][1], i, j);
-
-                    
-                    if(tail->prev)
-                        printB(tail->prev->b);
-                }
-                
-            }
+    // //if maximizer
+    if(c == 'w'){
+        boardValue = INT_MIN;
+        while (allBoards)
+        {
+            boardValue = max(boardValue, minimax(depth-1, &allBoards->b, 'b'));
+            allBoards = allBoards->prev;
         }
     }
-    return tail;
+    else{
+        boardValue = INT_MAX;
+        while(allBoards){
+            boardValue = min(boardValue, minimax(depth-1, &allBoards->b, 'w'));
+            allBoards = allBoards->prev;
+        }
+    }
+
 }
 
+
+mmnode* createmmNode(board* b, int score){
+    mmnode* temp = (mmnode*)malloc(sizeof(mmnode));
+    temp->b = b;
+    temp->score = score;
+    return temp;
+}
+
+
+
+mmnode* minimax2(int depth, board* b, char c){    
+    if (depth == 0){
+        mmnode* mmNode = createmmNode(b, evaluateBoard(*b));
+        // printf("\n");
+        // printB(*b);
+        return mmNode;
+    }
+
+    int boardValue;
+    listNode2* allBoards = listAllBoards2(b, 'w');
+
+    // maximize
+    if(c=='w'){
+        boardValue = INT_MIN;
+        while(allBoards){
+            boardValue = max(boardValue, minimax2(depth-1, &(allBoards->b), 'b')->score);
+            allBoards = allBoards->prev;
+        }
+    }
+}
 /*
 int minimax(int depth, board b, bool maximizer){
     if depth == 0 return evaluateBoard(b)
@@ -228,5 +227,12 @@ int minimax(int depth, board b, bool maximizer){
 }
 */
 
+int max(int a, int b){
+    return (a>=b) ? a : b;
+}
+
+int min(int a, int b){
+    return (a<=b) ? a : b;
+}
 
 
