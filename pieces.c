@@ -1,6 +1,8 @@
 #include "pieces.h"
 #include <stdio.h>
 #include <stdlib.h>
+#define KRED  "\x1B[31m"
+#define KNRM  "\x1B[0m"
 
 #include <stdbool.h>
 
@@ -51,13 +53,61 @@ void printB(board b){
     }
 
     for(int i = 0; i<rows; i++){
+        printf("%d | ", i);
         for(int j=  0; j<cols; j++){
-            if(b[i][j]->type == '\0') printf("  ");
-            else printf("%c " ,b[i][j]->type);
+            if(b[i][j]->type == '\0') printf("_ ");
+            if(b[i][j]->color == 'b'){
+                printf("%c " ,b[i][j]->type);
+
+            }
+            if(b[i][j]->color == 'w'){
+                printf("%s", KRED);
+                printf("%c " ,b[i][j]->type);
+            }
+            printf("%s", KNRM);
         }
         printf("\n");
     }
+    
+    // printf("\n");
+    printf("    ");
+    for(int i =0; i<16; i++) printf("\u203e");
+    printf("\n");
+    printf("    ");
+    for(int i =0; i<8; i++){
+        printf("%d ", i);
+    }
+    printf("\n");
 }
+
+// void printBlackB(board b){
+//     for(int i = 0; i<8; i++){
+//         // printf("hi");
+//         printf("%d | ", i);
+//         for(int j=  0; j<8; j++){
+//             if(b[i][j]->type == '\0')
+//                 printf("_ ");
+//             else if(b[i][j]->color == 'w'){
+//                 printf("_ ");
+//             }
+//             else 
+//                 printf("%c " ,b[i][j]->type);
+//         }
+//         if(i!= cols-1){
+//             printf("\n");   
+//         } 
+//     }
+//     printf("\n");
+//     printf("    ");
+//     for(int i =0; i<16; i++) printf("\u203e");
+//     printf("\n");
+//     printf("    ");
+//     for(int i =0; i<8; i++){
+//         printf("%d ", i);
+//     }
+//     printf("\n");
+// }
+
 
 void movePiece(board* b, int oldX, int oldY, int newX, int newY){
 
@@ -224,7 +274,7 @@ int** allPawnMoves(board b, int oldX, int oldY){
     char color = b[oldX][oldY]->color;
 
     
-    if(color = 'w'){
+    if(color == 'w'){
         
         if(isCoordInBoard(oldX+1, oldY) && b[oldX+1][oldY]->color == '\0'){
             moves[0][0] = oldX + 1;
@@ -241,14 +291,14 @@ int** allPawnMoves(board b, int oldX, int oldY){
             
 
     }else{
-        moves[0][0] = oldX - 1;
-        moves[0][1] = oldY;
+        // moves[0][0] = oldX - 1;
+        // moves[0][1] = oldY;
         
         if(isCoordInBoard(oldX-1, oldY) && b[oldX-1][oldY]->color == '\0'){
             moves[0][0] = oldX - 1;
             moves[0][1] = oldY;
         }
-        if(isCoordInBoard(oldX-1, oldY) && b[oldX-1][oldY+1]->color == 'w'){
+        if(isCoordInBoard(oldX-1, oldY+1) && b[oldX-1][oldY+1]->color == 'w'){
             moves[1][0] = oldX - 1;
             moves[1][1] = oldY + 1;
         }
@@ -292,8 +342,7 @@ int** allKingMoves(board b, int oldX, int oldY){
 
 int** validMoves(board b, int oldX, int oldY, int* numValidMoves){
     
-    //all local variables
-    #pragma region 
+    #pragma region local variables
     int pathSize;
     int numPaths;
     int** paths;
@@ -306,7 +355,6 @@ int** validMoves(board b, int oldX, int oldY, int* numValidMoves){
     
     char initColor= b[oldX][oldY]->color;
     char type = b[oldX][oldY]->type;
-
 
     //to set numPaths and int** allMoves
     switch (type)
@@ -343,6 +391,7 @@ int** validMoves(board b, int oldX, int oldY, int* numValidMoves){
     
     default:
         printf("default switch case (call from validMoves)\n");
+        return NULL;
         break;
     }
 
@@ -399,6 +448,11 @@ int** validMoves(board b, int oldX, int oldY, int* numValidMoves){
 
             pathX = paths[j][0];
             pathY = paths[j][1];
+            if(!isCoordInBoard(pathX, pathY)){
+                isValid = 0;
+                break;
+            }
+            // printf("pathX, pathY; (%d, %d)\n", pathX, pathY);
 
             // printf("Path sqaure %d: (%d %d)\n", j, paths[j][0], paths[j][1]);
 

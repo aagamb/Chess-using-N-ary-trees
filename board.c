@@ -184,13 +184,14 @@ mmnode* createmmNode(board* b, int score){
     return temp;
 }
 
-
-
-mmnode* minimax2(int depth, board* b, char c){    
+mmnode* minimax2(int depth, board* b, char c, mmnode** outermmNode){  
+    mmnode* mmNode;  
     if (depth == 0){
-        mmnode* mmNode = createmmNode(b, evaluateBoard(*b));
+        *outermmNode = createmmNode(b, evaluateBoard(*b));
+        mmNode = createmmNode(b, evaluateBoard(*b));
         // printf("\n");
         // printB(*b);
+        printf("the score is: %d\n", mmNode->score);
         return mmNode;
     }
 
@@ -201,11 +202,97 @@ mmnode* minimax2(int depth, board* b, char c){
     if(c=='w'){
         boardValue = INT_MIN;
         while(allBoards){
-            boardValue = max(boardValue, minimax2(depth-1, &(allBoards->b), 'b')->score);
+            if(minimax2(depth-1, &(allBoards->b), 'b', outermmNode))
+                boardValue = max(boardValue, minimax2(depth-1, &(allBoards->b), 'b', outermmNode)->score);
             allBoards = allBoards->prev;
         }
     }
+    else if(c=='b'){
+        boardValue = INT_MAX;
+        while(allBoards){
+            boardValue = min(boardValue, minimax2(depth-1, &(allBoards->b), 'w', outermmNode)->score);
+            allBoards = allBoards->prev;
+        }
+    }
+    else{
+        return mmNode;
+    }
 }
+
+mmnode* hardmm(int depth, board* b, char c, mmnode** outermmNode){
+    int boardValue;
+
+    //maximize
+    // if(depth==2){
+    //     boardValue = INT_MIN;
+    //     listNode2* allBoards = listAllBoards2(b, 'w');
+
+    //     //REMOVE THIS LINE WHEN EXTRA DEPTH IS ADDED
+    //     (*outermmNode)->score = boardValue;
+
+    //     while(allBoards){
+    //         int currBoardScore = evaluateBoard(allBoards->b);
+    //         printf("%d \n", currBoardScore);
+    //         if( currBoardScore > (*outermmNode)->score){
+    //             *outermmNode = createmmNode(&allBoards->b, currBoardScore);
+    //             boardValue = currBoardScore;
+    //         }
+    //         allBoards = allBoards->next;
+    //     }
+
+    // }
+    // depth--;
+    // printB(*(*outermmNode)->b);
+    if(depth == 1){
+        boardValue = INT_MIN;
+        listNode2* allBoards = listAllBoards2((*outermmNode)->b, 'w');
+
+        //REMOVE THIS LINE WHEN EXTRA DEPTH IS ADDED
+        (*outermmNode)->score = boardValue;
+
+        while (allBoards){
+            int currBoardScore = evaluateBoard(allBoards->b);
+            // printf("%d \n", currBoardScore);
+            if( currBoardScore > (*outermmNode)->score){
+                *outermmNode = createmmNode(&allBoards->b, currBoardScore);
+                boardValue = currBoardScore;
+            }
+            allBoards = allBoards->next;
+        }
+    }
+
+    if(depth == 0){
+        // mmnode* mmNode = createmmNode(b, evaluateBoard(*b));
+
+        // return mmNode;
+    }
+}
+
+int isMoveValid(board b, int oldX, int oldY, int newX, int newY){
+
+    int numValidMoves;
+    int** listValidMoves = validMoves(b, oldX, oldY, &numValidMoves);
+    int isValid =0;
+
+    if(!listValidMoves)
+        return 0;
+
+    if(b[oldX][oldY]->color != 'b')
+        return 0;
+         
+    for(int i =0; i<numValidMoves; i++){
+        int vnewX = listValidMoves[i][0]; //stands for valid newX
+        int vnewY = listValidMoves[i][1];
+
+        if((newX == vnewX) && (newY == vnewY)){
+            isValid = 0;
+            return 1;
+        }
+    }
+    return isValid;
+}
+
+
 /*
 int minimax(int depth, board b, bool maximizer){
     if depth == 0 return evaluateBoard(b)
@@ -228,11 +315,11 @@ int minimax(int depth, board b, bool maximizer){
 */
 
 int max(int a, int b){
-    return (a>=b) ? a : b;
+    return (a>b) ? a : b;
 }
 
 int min(int a, int b){
-    return (a<=b) ? a : b;
+    return (a<b) ? a : b;
 }
 
 

@@ -125,25 +125,6 @@ int** knightPaths(int oldX, int oldY, int newX, int newY){
 }
 
 int** queenPaths(int oldX, int oldY, int newX, int newY){
-    // int** rookMovesArr = rookMoves(oldX, oldY, newX, newY);
-    // int** bishopMovesArr = bishopMoves(oldX, oldY, newX, newY);
-
-    // int lenRookMovesArr = sizeof(rookMovesArr[0])/sizeof(rookMovesArr[0][0]);
-    // int lenBishopMovesArr = sizeof(bishopMovesArr[0])/sizeof(bishopMovesArr[0][0]);
-
-    // int pathSize = lenRookMovesArr + lenBishopMovesArr;
-    // int** paths = (int**)malloc(sizeof(int*)*4);
-    // memcpy(paths, rookMovesArr, lenRookMovesArr * sizeof(int*));
-    // memcpy(paths + lenRookMovesArr, bishopMovesArr, lenBishopMovesArr * sizeof(int*));
-
-
-    // paths = bishopMovesArr;
-    // printf("Pathsize is: %d", pathSize);
-    // printf("\npaths are:  ");
-    //     for(int i =0;i<10; i++){
-    //         printf("%d %d\n", paths[i][0], paths[i][1]);
-    //     }
-
     if(oldX == newX || oldY  == newY) return rookPaths(oldX, oldY, newX, newY);
     else return bishopPaths(oldX, oldY, newX, newY);
 }

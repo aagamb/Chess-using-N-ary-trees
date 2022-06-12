@@ -30,6 +30,7 @@ int** allPawnMoves(board b, int oldX, int oldY);
 int** allKingMoves(board b, int oldX, int oldY);
 
 int** validMoves(board b, int oldX, int oldY, int* numValidMoves);
+void printBlackB(board b);
 
 
 

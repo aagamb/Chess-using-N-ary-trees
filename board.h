@@ -28,9 +28,10 @@ float evaluateBoard(board b);
 // listNode* listAllBoards(board* b, char c);
 listNode2* listAllBoards2(board* b, char c);
 int minimax(int depth, board* b, char c);
-mmnode* minimax2(int depth, board* b, char c);
+mmnode* minimax2(int depth, board* b, char c, mmnode** outermmNode);
 mmnode* createmmNode(board* b, int score);
-
+mmnode* hardmm(int depth, board* b, char c, mmnode** outermmNode);
+int isMoveValid(board b, int oldX, int oldY, int newX, int newY);
 
 //helpers
 int max(int a, int b);
