@@ -22,6 +22,7 @@ typedef struct mmnode{
     int score;
 }mmnode;
 
+
 // listNode* newBoardNode(board b);
 listNode2* newBoardNode2(board b);
 float evaluateBoard(board b);
@@ -30,8 +31,9 @@ listNode2* listAllBoards2(board* b, char c);
 int minimax(int depth, board* b, char c);
 mmnode* minimax2(int depth, board* b, char c, mmnode** outermmNode);
 mmnode* createmmNode(board* b, int score);
-mmnode* hardmm(int depth, board* b, char c, mmnode** outermmNode);
+mmnode* hardmm(int depth, board* b, char c, mmnode** outermmNode, listNode2* allBoards);
 int isMoveValid(board b, int oldX, int oldY, int newX, int newY);
+mmnode* hardmm2(board* b, mmnode** outermmNode, listNode2* allBoards);
 
 //helpers
 int max(int a, int b);

@@ -69,6 +69,7 @@ int main(){
     printB(b);
 
     int oldX, oldY, newX, newY;
+    outermmNode = createmmNode(&b, INT_MIN);
     
     while(abs(evaluateBoard(b))<=200){
         int isValidMove = 0;
@@ -85,8 +86,10 @@ int main(){
 
         movePiece(&b, oldX, oldY, newX, newY);
 
-        outermmNode = createmmNode(&b, INT_MIN);
-        hardmm(1, &b, 'w', &outermmNode);
+        listNode2* allB = listAllBoards2(outermmNode->b, 'w');
+
+        hardmm(1, &b, 'w', &outermmNode, allB);
+        // hardmm2(&b, &outermmNode, allB);
 
         b = *(outermmNode->b);
         system("clear");
@@ -94,9 +97,6 @@ int main(){
         printB(b);
 
         printf("\n");
-        // printf("Pieces which you can move:\n");
-        // printBlackB(b);
-        // printf("\n");
     }
 
     if(evaluateBoard(b)>200)
@@ -106,6 +106,9 @@ int main(){
         printf("\nYou won!.");
     }
     #pragma endregion
+
+
+    
 
     free(b);
     return 0;
