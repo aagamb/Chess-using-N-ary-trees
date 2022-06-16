@@ -26,10 +26,8 @@ gcc make main && ./main
 The format to move the piece is as follows: oldX oldY, newX, newY<br /><br />
 
 Example Move and Result:<br />
-![img2](https://user-images.githubusercontent.com/69706585/173981652-58122bf2-6d40-4aa7-bb38-dac8d9c946ca.png)
-![img 3](https://user-images.githubusercontent.com/69706585/173981724-498fe2c4-dfa8-43f0-9bed-8418259d8957.png)
 
-Solarized dark             |  Solarized Ocean
+Before Move             |  After Move
 :-------------------------:|:-------------------------:
 ![img2](https://user-images.githubusercontent.com/69706585/173981652-58122bf2-6d40-4aa7-bb38-dac8d9c946ca.png)  |  ![img 3](https://user-images.githubusercontent.com/69706585/173981724-498fe2c4-dfa8-43f0-9bed-8418259d8957.png)
 
