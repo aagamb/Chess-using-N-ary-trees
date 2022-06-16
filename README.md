@@ -20,10 +20,10 @@ gcc make main && ./main
 
 ### Initial Screen
 ![img1](https://user-images.githubusercontent.com/69706585/173981422-9dd15cba-8b8d-415f-9da2-bef4049703e7.png)
-The user is white, hence plays first
+\nThe user is white, hence plays first
 
 ### Move Piece
-The format to move the piece is as follows: oldX oldY, newX, newY
+The format to move the piece is as follows: oldX oldY, newX, newY\n\n
 
 Example Move and Result:
 ![img2](https://user-images.githubusercontent.com/69706585/173981652-58122bf2-6d40-4aa7-bb38-dac8d9c946ca.png)
